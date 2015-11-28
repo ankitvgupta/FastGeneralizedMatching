@@ -3,10 +3,10 @@
 import numpy as np
 
 
-numDoctors = 2000
-numHospitals = 200
+numDoctors = 500
+numHospitals = 50
 numPositionsPerHospital = 8
-numPreferencesPerDoctor = 40
+numPreferencesPerDoctor = 20
 
 doctor_prefs = []
 for doctor in xrange(numDoctors):
