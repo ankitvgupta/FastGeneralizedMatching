@@ -2,10 +2,10 @@
 import numpy as np
 import csv
 
-numDoctors = 30
-numHospitals = 3
+numDoctors = 4000
+numHospitals = 400
 numPositionsPerHospital = 8
-numPreferencesPerDoctor = 2
+numPreferencesPerDoctor = 20
 
 doctor_prefs = []
 hospital_applications = {}
@@ -31,7 +31,6 @@ hospital_prefs = []
 for hospital, applications in zip(hospital_applications.keys(), hospital_applications.values()) :
     preferences = np.random.permutation(applications)
     hospital_prefs.append(preferences.astype(int))
-print hospital_prefs
 with open('hospital_preferences.txt', 'wb') as csvfile:
 	writer = csv.writer(csvfile, delimiter=' ')
 	for pref in hospital_prefs:
