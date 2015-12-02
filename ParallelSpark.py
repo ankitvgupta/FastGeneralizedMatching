@@ -30,7 +30,7 @@ def copartitioned(RDD1, RDD2):
 
 # In[4]:
 
-spots_per_hospital = 8
+spots_per_hospital = 6
 numPartitions = 4
 
 
