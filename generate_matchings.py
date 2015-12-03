@@ -2,8 +2,8 @@
 import numpy as np
 import csv
 
-numDoctors = 41000
-numHospitals = 5000
+numDoctors = 410
+numHospitals = 50
 numPositionsPerHospital = 6
 numPreferencesPerDoctor = 20
 
