@@ -21,7 +21,7 @@ def copartitioned(RDD1, RDD2):
     return RDD1.partitioner == RDD2.partitioner
 
 spots_per_hospital = 6
-numPartitions = 2
+numPartitions = 8
 
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
