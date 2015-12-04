@@ -31,7 +31,7 @@ def copartitioned(RDD1, RDD2):
 # In[4]:
 
 spots_per_hospital = 6
-numPartitions = 4
+numPartitions = 2
 
 
 # In[5]:
@@ -140,7 +140,10 @@ doctor_prefs = doctor_RDD.map(lambda x: x).partitionBy(numPartitions).cache()
 # In[14]:
 
 # Accum1 tracks the number of doctors whose status changed
+iteration = 0
+steps_per_checkpoint = 5
 while True:
+    iteration += 1
     # These are the top remaining choices for the unmatched doctors
     assert(copartitioned(doctor_prefs, doctor_matchings))
     unmatched_doctors_joined = doctor_prefs.join(doctor_matchings).filter(lambda (doc, (prefs, match)): match == -1 and len(prefs) > 0).cache()
@@ -148,36 +151,38 @@ while True:
     print "Number doctors to work on:", num_unmatched
     if num_unmatched == 0:
         break
-    unmatched_doctor_preferences = unmatched_doctors_joined.mapValues(lambda (prefs, match): prefs).cache()
+    unmatched_doctor_preferences = unmatched_doctors_joined.mapValues(lambda (prefs, match): prefs)
     # Update all of the doctor prefs by removing the first pref from each unmatched doctor
     assert(copartitioned(doctor_prefs, doctor_matchings))
     # Force a checkpoint and evaluation to avoid StackOverflowError
     doctor_prefs = doctor_prefs.join(doctor_matchings).mapValues(lambda (prefs, match): remove_pref_if_needed(prefs, match)).cache()
-    doctor_prefs.checkpoint()
-    doctor_prefs.count()
+    if iteration % steps_per_checkpoint == 0:
+        doctor_prefs.checkpoint()
+        doctor_prefs.count()
     # Take the first pref from each unmatched doctor 
-    doctor_proposals = unmatched_doctor_preferences.mapValues(lambda x: x[0]).cache()
+    doctor_proposals = unmatched_doctor_preferences.mapValues(lambda x: x[0])
     # Group the requests by hospital
-    hospital_groupings = doctor_proposals.map(lambda (x, y) : (y, x)).partitionBy(numPartitions).groupByKey().cache()
+    hospital_groupings = doctor_proposals.map(lambda (x, y) : (y, x)).partitionBy(numPartitions).groupByKey()
     # Join the new requests for each hospital with what they previously had and their preferences
     assert(copartitioned(hospital_groupings, hospital_matchings))
     assert(copartitioned(hospital_groupings, hospital_RDD))
-    joined_hospital = hospital_groupings.rightOuterJoin(hospital_matchings).join(hospital_RDD).cache()
+    joined_hospital = hospital_groupings.rightOuterJoin(hospital_matchings).join(hospital_RDD)
     # Determine the best ones
     # Force a checkpoint and evaluation to avoid a StackOverflow
     hospital_matchings = joined_hospital.mapValues(lambda ((new, old), preferences): combine_old_new(new, old, preferences)).cache()
-    hospital_matchings.checkpoint()
-    hospital_matchings.count()
+    if iteration % steps_per_checkpoint == 0:
+        hospital_matchings.checkpoint()
+        hospital_matchings.count()
     # Inform the doctors of the match
-    matched_doctors = hospital_matchings.flatMapValues(lambda x: x).map(lambda (x, y) : (y, x)).partitionBy(numPartitions).cache()
+    matched_doctors = hospital_matchings.flatMapValues(lambda x: x).map(lambda (x, y) : (y, x)).partitionBy(numPartitions)
     # Update the doctor matchings
     assert(copartitioned(doctor_matchings, matched_doctors))
 
     # Force a checkpoint and evaluation to avoid StackOverflowError
     doctor_matchings = doctor_matchings.leftOuterJoin(matched_doctors).mapValues(lambda (old,new) : accept_new_hospital_assignment(old, new)).cache()
-    doctor_matchings.checkpoint()
-    doctor_matchings.count()
-    sys.stdout.flush()
+    if iteration % steps_per_checkpoint == 0:
+        doctor_matchings.checkpoint()
+        doctor_matchings.count()
 
 
 # In[ ]:
