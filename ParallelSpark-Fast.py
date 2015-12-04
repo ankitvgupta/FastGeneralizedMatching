@@ -128,12 +128,9 @@ while True:
     assert(copartitioned(new_matchings, doctor_matchings))
     num_changes = new_matchings.join(doctor_matchings).filter(lambda (doc, (new, old)): new != old).count()
     doctor_matchings = new_matchings
+    doctor_matchings.cache()
     hospital_new_versions = doctor_matchings.filter(lambda (doc, match): match != -1).map(lambda (x,y) : (y,x)).partitionBy(numPartitions).groupByKey()
     hospital_matchings = hospital_new_versions.rightOuterJoin(hospital_matchings).mapValues(lambda (new_matches, old_matches): update_hospital_matches(new_matches, old_matches))
-    
-    
-    
-    doctor_matchings.cache()
     hospital_matchings.cache()
     print "The number of changes in matches in this iteration was:", num_changes
     if num_changes == 0:
