@@ -8,7 +8,7 @@ numPositionsPerHospital = 6
 numPreferencesPerDoctor = 40
 
 doctor_prefs = []
-hospital_applications = {}
+hospital_applications = [[] for i in range(numHospitals)]
 
 # Start by initializing empty arrays for each hospital
 for hospital in xrange(numHospitals):
