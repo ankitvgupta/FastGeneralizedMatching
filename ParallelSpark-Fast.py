@@ -132,7 +132,7 @@ while True:
     hospital_new_versions = doctor_matchings.filter(lambda (doc, match): match != -1).map(lambda (x,y) : (y,x)).partitionBy(numPartitions).groupByKey()
     hospital_matchings = hospital_new_versions.rightOuterJoin(hospital_matchings).mapValues(lambda (new_matches, old_matches): update_hospital_matches(new_matches, old_matches))
     hospital_matchings.cache()
-    break
+    #break
     print "The number of changes in matches in this iteration was:", num_changes
     if num_changes == 0:
         break
