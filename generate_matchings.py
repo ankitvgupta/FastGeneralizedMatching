@@ -2,13 +2,13 @@
 import numpy as np
 import csv
 
-numDoctors = 41000
-numHospitals = 5000
+numDoctors = 410000
+numHospitals = 50000
 numPositionsPerHospital = 6
-numPreferencesPerDoctor = 20
+numPreferencesPerDoctor = 30
 
 doctor_prefs = []
-hospital_applications = {}
+hospital_applications = [[] for i in range(numHospitals)]
 
 # Start by initializing empty arrays for each hospital
 for hospital in xrange(numHospitals):
