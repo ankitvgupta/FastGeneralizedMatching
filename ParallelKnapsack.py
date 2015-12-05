@@ -1,5 +1,3 @@
-# In[1]:
-
 import findspark
 findspark.init()
 
@@ -13,15 +11,78 @@ import sys
 
 # Reduce the amount that Spark logs to the console.
 logger = sc._jvm.org.apache.log4j
-logger.LogManager.getLogger("org"). setLevel( logger.Level.ERROR )
-logger.LogManager.getLogger("akka").setLevel( logger.Level.ERROR )
+logger.LogManager.getLogger("org"). setLevel( logger.Level.ERROR)
+logger.LogManager.getLogger("akka").setLevel( logger.Level.ERROR)
+
+# hospital's utility for that doctor, scale of 0 to 200
+# the utility function is totally arbitrary, so fuck it
+def get_utility((doc, hosp)):
+    return ((doc + 17) * (hosp + 79) * 393342739) % 200
+
+def get_capacity(hosp):
+    return ((hosp * 67867967) % 700) + 300
+
+# the minimum price at which doc will work for hosp
+def get_min_price(doc, hosp):
+    return ((doc + 7) * (hosp + 3) * 413158511) % 500
+
+# Input: id_val_map is a dict of id -> val mappings
+# (aka the hospital utility function)
+# id_cost_list is the price at which all of the ids listed
+# above will work for this particular hospital
+# Output: returns a list of the ids of the doctors we're choosing.
+# We don't want to mess around with function call overhead, so we'll
+# do a fast top down DP
+def fast_knapsack_solver(id_val_map, id_cost_list, capacity):
+    dp_arr = [[0]* capacity for i in range(len(id_cost_list))]
+    ptr_arr = [[(0,0)]* capacity for i in range(len(id_cost_list))]
+    for i in range(capacity):
+        if i >= id_cost_list[0][1]:
+            dp_arr[0][i] = id_val_map[id_cost_list[0][0]]
+    for i in range(1, len(id_cost_list)):
+        for j in range(capacity):
+            if (j - id_cost_list[i][1] < 0 or dp_arr[i - 1][j] > dp_arr[i - 1][j - id_cost_list[i][1]] \
+                     + id_val_map[id_cost_list[i][0]]):
+                dp_arr[i][j] = dp_arr[i - 1][j]
+                ptr_arr[i][j] = (i - 1, j)
+            else:
+                dp_arr[i][j] = dp_arr[i - 1][j - id_cost_list[i][1]] \
+                 + id_val_map[id_cost_list[i][0]]
+                ptr_arr[i][j] = (i - 1, j - id_cost_list[i][1])       
+    maxind = 0
+    maxval = 0
+    for k in range(capacity):
+        if dp_arr[len(dp_arr) - 1][k] > maxval:
+            maxind = k
+            maxval = dp_arr[len(dp_arr) - 1][k]
+    # Trace back to figure out what went in our knapsack
+    knapsack_contents = []
+    i = len(dp_arr) - 1
+    j = maxind
+    cur = (len(dp_arr) - 1, maxind)
+    bn = False
+    while 1:
+        if (ptr_arr[cur[0]][cur[1]][1] != cur[1]):
+            knapsack_contents.append(id_cost_list[cur[0]][0])
+        cur = ptr_arr[cur[0]][cur[1]]
+        if bn:
+            break
+        if cur[0] == 0:
+            bn = True
+    return knapsack_contents
+
+ivm_test_1 = {0:2, 1:3, 2:4, 3:2, 4:5}
+# [doc, price] CURRENTLY MUST BE ORDERED IN THIS WAY
+icl_test_1 = [[0,1],[1,2],[2,3],[3,6],[4,1]]
+
+print fast_knapsack_solver(ivm_test_1, icl_test_1, 3)
 
 def copartitioned(RDD1, RDD2):
     "check if two RDDs are copartitioned"
     return RDD1.partitioner == RDD2.partitioner
 
 spots_per_hospital = 6
-numPartitions = 8
+numPartitions = 4
 
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
@@ -32,8 +93,6 @@ hospital_RDD = sc.textFile('hospital_preferences.txt', numPartitions).map(lambda
 
 assert(copartitioned(doctor_RDD, hospital_RDD))
 
-
-
 # Preferences is a list of ints in order that you want them
 # pickingfrom is the ones you are picking from
 # N is how many you are picking
@@ -42,10 +101,6 @@ def pick_top_N(preferences, pickingfrom, N):
     pickingfrom.sort(key=lambda x: preferences.index(x))
     return pickingfrom[:N]
 
-    
-
-
-# In[8]:
 
 def pick_best_program(pickingfrom, preferences):
     
@@ -57,17 +112,18 @@ def pick_best_program(pickingfrom, preferences):
     pickingfrom.sort(key=lambda x: preferences.index(x))
     return pickingfrom[0]
 
-# newoptions: iterable, each element is a doctor id bt 0, numdocs - 1
-# 
-# oldoptions: same
-# people previously matched with this hospital
-def combine_old_new(newoptions, oldoptions, preferences):
+
+
+def combine_old_new(newoptions, oldoptions, hospid):
     if newoptions == None:
         newoptions = []
     if oldoptions == None:
         oldoptions = []
     alloptions = list(set(newoptions).union(set(oldoptions)))
-    return pick_top_N(preferences, alloptions, spots_per_hospital)
+    id_val_map = {key: value for (key, value) in zip(alloptions, map(get_utility, zip(alloptions, [hospid] * len(alloptions))))}
+    id_cost_list = [[a, get_min_price(a,hospid)] for a in alloptions]
+    return fast_knapsack_solver(id_val_map, id_cost_list, get_capacity(hospid))
+    #return pick_top_N(preferences, alloptions, spots_per_hospital)
 
 
 def accept_new_hospital_assignment(old, new):
@@ -115,16 +171,19 @@ def update_hospital_matches(new_matches, old_matches):
 
 iteration = 0
 steps_per_checkpoint = 5
+
+# Convergence criterion
+# If we see 5 iterations within 
+epsilon = 0.1
 while True:
     iteration += 1
     # These are the top remaining choices for the unmatched doctors
     assert(copartitioned(doctor_prefs, doctor_matchings))
-
     doctor_filtered = doctor_prefs.join(doctor_matchings).mapValues(lambda (prefs, match): get_better_prefs(prefs, match))
     applications_per_hospital = doctor_filtered.flatMapValues(lambda x:x).map(lambda (x,y):(y,x)).partitionBy(numPartitions).groupByKey().partitionBy(numPartitions)
     assert(copartitioned(applications_per_hospital, hospital_matchings))
     assert(copartitioned(hospital_matchings, hospital_RDD))
-    joined_with_old_matches = applications_per_hospital.rightOuterJoin(hospital_matchings).join(hospital_RDD).mapValues(lambda ((new,old), preferences): combine_old_new(new, old, preferences))
+    joined_with_old_matches = applications_per_hospital.rightOuterJoin(hospital_matchings).map(lambda (hospital_id, (new,old)): (hospital_id, combine_old_new(new, old, hospital_id)))
     acceptances_per_doctor = joined_with_old_matches.flatMapValues(lambda x:x).map(lambda (x,y):(y,x)).partitionBy(numPartitions).groupByKey()
     assert(copartitioned(acceptances_per_doctor, doctor_RDD))
     new_matchings = acceptances_per_doctor.rightOuterJoin(doctor_RDD).mapValues(lambda (programs,preferences): pick_best_program(programs, preferences)).cache()
@@ -168,19 +227,19 @@ def getpreferreddoctors(matches, preferences):
     return list(best_people)
     
 # Checks if all of the matches are stable
-def verify_matches(doc_matches, hos_matches, original_doc_prefs, original_hos_prefs):
-    doctor_to_hospital_preferences = doc_matches.join(original_doc_prefs).mapValues(lambda (match, preferences): getpreferredhospitals(match, preferences)).flatMapValues(lambda x: x)
-    hospital_to_doctor_preferences = hos_matches.join(original_hos_prefs).mapValues(lambda (matches, preferences): getpreferreddoctors(matches, preferences)).flatMapValues(lambda x: x).partitionBy(numPartitions)
-    flip_prefs = doctor_to_hospital_preferences.map(lambda (x,y): (y,x)).partitionBy(numPartitions)
-    return flip_prefs.intersection(hospital_to_doctor_preferences)
+# def verify_matches(doc_matches, hos_matches, original_doc_prefs, original_hos_prefs):
+#     doctor_to_hospital_preferences = doc_matches.join(original_doc_prefs).mapValues(lambda (match, preferences): getpreferredhospitals(match, preferences)).flatMapValues(lambda x: x)
+#     hospital_to_doctor_preferences = hos_matches.join(original_hos_prefs).mapValues(lambda (matches, preferences): getpreferreddoctors(matches, preferences)).flatMapValues(lambda x: x).partitionBy(numPartitions)
+#     flip_prefs = doctor_to_hospital_preferences.map(lambda (x,y): (y,x)).partitionBy(numPartitions)
+#     return flip_prefs.intersection(hospital_to_doctor_preferences)
 
 
-bad_results = verify_matches(doctor_matchings, hospital_matchings, doctor_RDD, hospital_RDD)
+#bad_results = verify_matches(doctor_matchings, hospital_matchings, doctor_RDD, hospital_RDD)
 # If the assertion passes, then this is a stable matching!
-assert(bad_results.count() == 0)
+#assert(bad_results.count() == 0)
 
 
 # Make sure the number of matched doctors agrees in both RDDs
-assert(doctor_matchings.filter(lambda (x,y): y != -1).count() == hospital_matchings.mapValues(len).values().sum())
+# assert(doctor_matchings.filter(lambda (x,y): y != -1).count() == hospital_matchings.mapValues(len).values().sum())
 
 
