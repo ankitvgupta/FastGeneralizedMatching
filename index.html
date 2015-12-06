@@ -20,6 +20,52 @@
 
     <section class="main-content">
       <h3>
+<a id="problem" class="anchor" href="#problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem</h3>
+
+<p>For our final project, we are exploring several market design problems. In particular, we are exploring the subset of market design problems known as “matching”. One of the central problems in matching is the “stable marriage” problem, in which there are N men and N women, each of which have an order of preferences over the other. The goal is to find N pairings such that there is no unpaired couple that both want each other more than their current partners. There is a known serial algorithm to solve this known as the Gale-Shapley Algorithm.</p>
+
+<p>An extension to this problem is used in the National Residency Match, a real process by which doctors finishing medical school get placed into American residency programs. In this set, each doctor has an ordering of preferences over some subset of the hospitals. Each hospital has an ordering over the doctors that apply there, and some number of spots. The goal is to again find a matching such that no unpaired (doctor, hospital) both want each other more than their current match. It is thought in the literature that this problem is solved using an adaptation of the serial Gale-Shapley algorithm. </p>
+
+<p>Furthermore, there is a field of market design called matching with contracts, where one problem setup is that rather than having preferences over each other, each doctor has a price they are willing to be paid to work at each hospital, and each hospital has a utility for each doctor, and we are trying to find the best assignment of doctors to hospitals such that each hospital maximizes its utility while keeping within its budget.  </p>
+
+<p>We believe that the scale of these problems means that developing a parallel algorithm can solve this class of problems well. In particular, our project is focused on developing parallel Spark-based algorithms for solving the National Residency Match, and, as a reach goal, to work towards solutions for the matching with contracts problem, which has exponential complexity and no known non-trivial serial algorithmic solutions.</p>
+
+<h3>
+<a id="data-overview" class="anchor" href="#data-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Overview</h3>
+
+<p>Describe your data in detail: where did it come from, how did you acquire it, what does it mean, etc.</p>
+
+<h3>
+<a id="program-design" class="anchor" href="#program-design" aria-hidden="true"><span class="octicon octicon-link"></span></a>Program Design</h3>
+
+<p>Describe your program design and why you chose the features you did.</p>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>How do you use your application (mouse and keyboard functions, input/output, etc)?</p>
+
+<h3>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
+
+<p>What is the performance of your code? What speedup and efficiency did you achieve? What optimizations did you implement to achieve this speedup?</p>
+
+<h3>
+<a id="insights" class="anchor" href="#insights" aria-hidden="true"><span class="octicon octicon-link"></span></a>Insights</h3>
+
+<p>What interesting insights did you gain from this project?</p>
+
+<h3>
+<a id="extensions" class="anchor" href="#extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extensions</h3>
+
+<p>What extensions and improvements can you suggest?</p>
+
+<h3>
+<a id="takeaways" class="anchor" href="#takeaways" aria-hidden="true"><span class="octicon octicon-link"></span></a>Takeaways</h3>
+
+<p>What did you most enjoy about working on this project? What was the most challenging aspect? What was the most frustrating? What would you do differently next time?</p>
+
+<h3>
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
 
 <p>Testing
