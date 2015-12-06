@@ -33,7 +33,15 @@
 <h3>
 <a id="data-overview" class="anchor" href="#data-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Overview</h3>
 
-<p>Describe your data in detail: where did it come from, how did you acquire it, what does it mean, etc.</p>
+<h4>
+<a id="describe-your-data-in-detail-where-did-it-come-from-how-did-you-acquire-it-what-does-it-mean-etc" class="anchor" href="#describe-your-data-in-detail-where-did-it-come-from-how-did-you-acquire-it-what-does-it-mean-etc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Describe your data in detail: where did it come from, how did you acquire it, what does it mean, etc.</h4>
+
+<p>The data for our problem was modeled off of the parameters of the National Residency Match. We know from the match's publications that there are approximately 41,000 doctors that are matched to 5,000 hospitals to up to 30,000 spots. Thus, we generated data using these parameters. In particular, we generate a random set of preferences for each doctor, and for each hospital. </p>
+
+<p>Thus, the input data representation essentially consistent of two files. There are N doctors and M hospitals, and each doctor can apply to up to numHospitalsPerDoctor hospitals.</p>
+
+<p>1) doctor_preferences: N lines. Each line has an random permutation of numHospitalsPerDoctor hospital ids, each of which is between 0 and M - 1.
+2) hospital_preferences: M lines. Each line has a random permutation of the doctors that applied there.</p>
 
 <h3>
 <a id="program-design" class="anchor" href="#program-design" aria-hidden="true"><span class="octicon octicon-link"></span></a>Program Design</h3>
