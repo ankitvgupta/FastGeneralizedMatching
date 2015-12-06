@@ -148,7 +148,7 @@ while True:
     assert(copartitioned(doctor_prefs, doctor_matchings))
     unmatched_doctors_joined = doctor_prefs.join(doctor_matchings).filter(lambda (doc, (prefs, match)): match == -1 and len(prefs) > 0).cache()
     num_unmatched = unmatched_doctors_joined.count() 
-    print "Number doctors to work on:", num_unmatched
+    #print "Number doctors to work on:", num_unmatched
     if num_unmatched == 0:
         break
     unmatched_doctor_preferences = unmatched_doctors_joined.mapValues(lambda (prefs, match): prefs)
@@ -174,11 +174,13 @@ while True:
         hospital_matchings.checkpoint()
         hospital_matchings.count()
     # Inform the doctors of the match
-    matched_doctors = hospital_matchings.flatMapValues(lambda x: x).map(lambda (x, y) : (y, x)).partitionBy(numPartitions)
+    matched_doctors = hospital_matchings.flatMapValues(lambda x: x).map(lambda (x, y) : (y, x)).partitionBy(numPartitions).cache()
     # Update the doctor matchings
     assert(copartitioned(doctor_matchings, matched_doctors))
 
     # Force a checkpoint and evaluation to avoid StackOverflowError
+    num_changes = doctor_matchings.leftOuterJoin(matched_doctors).filter(lambda (doc, (old, new)) : old != accept_new_hospital_assignment(old, new)).count()
+    print "Number of changes is", num_changes
     doctor_matchings = doctor_matchings.leftOuterJoin(matched_doctors).mapValues(lambda (old,new) : accept_new_hospital_assignment(old, new)).cache()
     if iteration % steps_per_checkpoint == 0:
         doctor_matchings.checkpoint()
