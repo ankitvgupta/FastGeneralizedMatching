@@ -52,7 +52,8 @@
 <h3>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
 
-<p>How do you use your application (mouse and keyboard functions, input/output, etc)?</p>
+<p>To use this application, the main program takes in a list of preferences for each doctor and hospital. So, if this were to be used for the true National Residency Match, essentially the user would just have to move all of the data into the appropriate files, and then call the Python-based Spark program. Then, the program generates the matchings, and verifies that they are all stable. Lastly, it can output the resultant matchings, if required. 
+How do you use your application (mouse and keyboard functions, input/output, etc)?</p>
 
 <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
@@ -62,12 +63,17 @@
 <h3>
 <a id="insights" class="anchor" href="#insights" aria-hidden="true"><span class="octicon octicon-link"></span></a>Insights</h3>
 
+<p>We found a number of interesting insights. For one, it suggests that for relatively small sized problems, Spark has enormous overhead in achieving its parallel behavior, which makes it not as useful. In particular, when operating Spark on a Macbook Pro with 4 cores, we found limited speedup in conducting the National Residency Match using Spark. However, once the size of the dataset got larger, the Spark-based algorithm very quickly caught up and overtook the serial implementation.</p>
+
+<p>Furthermore, our intuitions about where the complexity of this problem was evolved over time. Earlier, our main expectation of what made this problem hard was the fact that there are thousands of doctors trying to be matched to thousands of hospitals, and thus being able to parallelize this process would quickly lead to a significant speedup. While this was true to some extent, we actually found that there was a huge deal of complexity caused by the potentially high number of hospitals that each doctor to apply to. When we increased the number of hospitals each doctor could apply to, we saw polynomial slowdown in the amount of time that the serial implementation took. Furthermore, when we wrote our second Spark-based algorithm which allowed each doctor to submit all of their choices at once, we got significant speedups, which makes sense since it mitigated for a single doctor making many applications.</p>
+
 <p>What interesting insights did you gain from this project?</p>
 
 <h3>
 <a id="extensions" class="anchor" href="#extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extensions</h3>
 
-<p>What extensions and improvements can you suggest?</p>
+<p>One of the extensions that we are currently working on is to building in support for a much more complicated class of problems called Matching with Contracts. In this class of problems, 
+What extensions and improvements can you suggest?</p>
 
 <h3>
 <a id="takeaways" class="anchor" href="#takeaways" aria-hidden="true"><span class="octicon octicon-link"></span></a>Takeaways</h3>
