@@ -10,12 +10,12 @@ This repository contains the following important files.
 
 ## Genators
 - [generate_matchings.py](generate_matchings.py): contains code to generate preferences for give numbers of doctors, hospitals, and other preferences.
-- generate_graphs.py takes the data from the various experiments and plots the results
+- [generate_graphs.py](generate_graphs.py) takes the data from the various experiments and plots the results
 
 
 ## Dependencies
 Pyspark (we use Spark 1.5.0), numpy, scipy
 
 ## Instructions to Run
-- Set parameters in generate_matchings.py to 
-
+- Set parameters in [generate_matchings.py](generate_matchings.py) to the desired parameters. 
+- run 'python generate_matchings.py'
