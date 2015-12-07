@@ -9,6 +9,13 @@ This repository contains the following important files.
 - GaleShapleySerial.py contains the serial implementation of Gale-Shapley.
 
 ## Genators
-- generate_matchings.py: contains code to generate preferences for give numbers of doctors, hospitals, and other preferences.
-
+- [generate_matchings.py](generate_matchings.py): contains code to generate preferences for give numbers of doctors, hospitals, and other preferences.
 - generate_graphs.py takes the data from the various experiments and plots the results
+
+
+## Dependencies
+Pyspark (we use Spark 1.5.0), numpy, scipy
+
+## Instructions to Run
+- Set parameters in generate_matchings.py to 
+
