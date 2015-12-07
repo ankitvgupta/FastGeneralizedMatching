@@ -19,3 +19,7 @@ Pyspark (we use Spark 1.5.0), numpy, scipy
 ## Instructions to Run
 - Set parameters in [generate_matchings.py](generate_matchings.py) to the desired parameters. 
 - run `python generate_matchings.py`
+- You should now see a `doctor_matchings.txt` and `hospital_matchings.txt` file created in the directory
+- Run `time python ParallSpark-Fast.py`, or any of the other above algorithms
+    - Alternatively, you can run this script on AWS using spark-submit
+- The code should execute and print the time it took to generate all of the matchings and verify their stability.
