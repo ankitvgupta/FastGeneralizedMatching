@@ -18,4 +18,4 @@ Pyspark (we use Spark 1.5.0), numpy, scipy
 
 ## Instructions to Run
 - Set parameters in [generate_matchings.py](generate_matchings.py) to the desired parameters. 
-- run 'python generate_matchings.py'
+- run `python generate_matchings.py`
