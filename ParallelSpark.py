@@ -1,4 +1,9 @@
-
+#################
+# ParallelSpark.py
+# Authors: Ankit Gupta, Jonah Kallenbach
+#
+# Implements a Parallelized version of the Gale-Shapley algorithm, parallelizing over doctors
+################
 
 import findspark
 findspark.init()
@@ -14,27 +19,13 @@ import itertools
 logger = sc._jvm.org.apache.log4j
 logger.LogManager.getLogger("org"). setLevel( logger.Level.ERROR )
 logger.LogManager.getLogger("akka").setLevel( logger.Level.ERROR )
-
-
-# In[2]:
-
 import sys
-
-
-# In[3]:
-
 def copartitioned(RDD1, RDD2):
     "check if two RDDs are copartitioned"
     return RDD1.partitioner == RDD2.partitioner
 
-
-# In[4]:
-
 spots_per_hospital = 6
 numPartitions = 2
-
-
-# In[5]:
 
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
@@ -42,24 +33,7 @@ numPartitions = 2
 doctor_RDD = sc.textFile('doctor_preferences.txt', numPartitions).map(lambda x: map(int, x.split())).zipWithIndex()                                                        .map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
 hospital_RDD = sc.textFile('hospital_preferences.txt', numPartitions).map(lambda x: map(int, x.split())).zipWithIndex()                                                        .map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
 
-# In[6]:
-
-
-
 assert(copartitioned(doctor_RDD, hospital_RDD))
-
-
-# In[6]:
-
-
-
-
-# In[6]:
-
-
-
-
-# In[7]:
 
 # Preferences is a list of ints in order that you want them
 # pickingfrom is the ones you are picking from
@@ -69,20 +43,8 @@ def pick_top_N(preferences, pickingfrom, N):
     pickingfrom.sort(key=lambda x: preferences.index(x))
     return pickingfrom[:N]
 
-    
-
-
-# In[7]:
-
-
-
-
-# In[8]:
-
 doctor_matchings = doctor_RDD.mapValues(lambda x : -1).cache()
 hospital_matchings = hospital_RDD.mapValues(lambda x: []).cache()
-
-# In[9]:
 
 def combine_old_new(newoptions, oldoptions, preferences):
     if newoptions == None:
@@ -92,16 +54,10 @@ def combine_old_new(newoptions, oldoptions, preferences):
     alloptions = list(set(newoptions).union(set(oldoptions)))
     return pick_top_N(preferences, alloptions, spots_per_hospital)
 
-
-# In[10]:
-
 def accept_new_hospital_assignment(old, new):
     if new == None:
         return -1
     return new
-
-
-# In[11]:
 
 # If unmatched (match == -1), then we are gonna use try to use the next pref, so one remove from the list
 def remove_pref_if_needed(prefs, match):
@@ -111,9 +67,6 @@ def remove_pref_if_needed(prefs, match):
     # Else return original prefs
     return prefs
 
-
-# In[12]:
-
 def is_changed(old, new):
     if old == -1 and new == None:
         return False
@@ -122,24 +75,8 @@ def is_changed(old, new):
     return old != new
     
 
-
-# In[13]:
-
 doctor_prefs = doctor_RDD.map(lambda x: x).partitionBy(numPartitions).cache()
 
-# In[13]:
-
-
-
-
-# In[13]:
-
-
-
-
-# In[14]:
-
-# Accum1 tracks the number of doctors whose status changed
 iteration = 0
 steps_per_checkpoint = 5
 while True:
@@ -148,7 +85,6 @@ while True:
     assert(copartitioned(doctor_prefs, doctor_matchings))
     unmatched_doctors_joined = doctor_prefs.join(doctor_matchings).filter(lambda (doc, (prefs, match)): match == -1 and len(prefs) > 0).cache()
     num_unmatched = unmatched_doctors_joined.count() 
-    #print "Number doctors to work on:", num_unmatched
     if num_unmatched == 0:
         break
     unmatched_doctor_preferences = unmatched_doctors_joined.mapValues(lambda (prefs, match): prefs)
@@ -186,9 +122,6 @@ while True:
         doctor_matchings.checkpoint()
         doctor_matchings.count()
 
-
-# In[ ]:
-
 # Given a match that a doctor had and the original preferences, determine all of the hospitals the doctor would have preferred.
 def getpreferredhospitals(match, preferences):
     # If you weren't matched, you would have preferred any of the original ranked ones
@@ -214,22 +147,8 @@ def verify_matches(doc_matches, hos_matches, original_doc_prefs, original_hos_pr
     flip_prefs = doctor_to_hospital_preferences.map(lambda (x,y): (y,x)).partitionBy(numPartitions)
     return flip_prefs.intersection(hospital_to_doctor_preferences)
 
-        
-
-
-# In[ ]:
-
 bad_results = verify_matches(doctor_matchings, hospital_matchings, doctor_RDD, hospital_RDD)
 # If the assertion passes, then this is a stable matching!
 assert(bad_results.count() == 0)
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
 
 

@@ -1,4 +1,10 @@
-# In[1]:
+#################
+# ParallelSpark-Fast.py
+# Authors: Ankit Gupta, Jonah Kallenbach
+# 
+# Implements matching (National Residency Match) by parallelizing over doctors and preferences. 
+# 
+################
 
 import findspark
 findspark.init()
