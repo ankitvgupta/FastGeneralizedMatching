@@ -37,7 +37,15 @@
 <h3>
 <a id="problem" class="anchor" href="#problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem</h3>
 
-<p>For our final project, we explored several problems in market design, a field of economics which concerns optimally matching two or more sets of agents who have preferences about the other. In particular, we are exploring the subset of market design problems known as “matching”. One of the central problems in matching is the “stable marriage” problem, in which there are N men and N women, each of which have an order of preferences over the other. The goal is to find N pairings such that there is no unpaired couple that both want each other more than their current partners. </p>
+<p>For our final project, we explored several problems in market design, a field of economics which concerns optimally matching two or more sets of agents who have preferences about the other. In particular, we are exploring the subset of market design problems known as “matching”. One of the central problems in matching is the “stable marriage” problem, in which there are N men and N women, each of which have an order of preferences over the other. The goal is to find N pairings such that there is no unpaired couple that both want each other more than their current partners.  An example of a setup for such a problem, taken from <a href="http://www.science4all.org/le-nguyen-hoang/marriage-problem-and-variants/">here</a>, can be found below:</p>
+
+<img src='sm1.png' />
+
+<p>Note that the red numbers represent the male preferences over the females, and the pick numbers the female preferences over the males.  The bolded green lines are partnerships which form one example of a stable marriage. </p>
+
+<!-- <p> An example of a stable outcome which solves this problem, where the solid blue arrows represent partnerships (ignore anything outside of the green rectangle):</p>
+
+<img src='smsol.png'/> -->
 
 <p>There is a known serial algorithm to solve this known as the Gale-Shapley Algorithm.  In this simple algorithm, the men who do not have a match yet propose to the women, and the women non-bindingly 'accept' the man who proposed to them that they prefer the most.  This continues until every man has either proposed to their list of women or is matched to a woman. Its correctness (in terms of producing stable matchings, a term we will define below) can be argued succinctly by contradiction, and its termination in at most $N^2$ iterations can be argued by noting that in the worst case every man proposes to every woman, a total of $N^2$ events.  Despite its simplicity, this algorithm has found hundreds of areas of application in theoretical and applied economics: including various public school system matchings, matchings of kidney donors with those in need, and many, many more. For these achievements, this algorithm garnered Gale and Shapley the Nobel prize.</p>
 
@@ -91,7 +99,7 @@
 <h3>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
 
-<p>To use this application, run the main program takes in a list of preferences for each doctor and hospital. So, if this were to be used for the true National Residency Match, essentially the user would just have to move all of the data into the appropriate files, and then call the Python-based Spark program. Then, the program generates the matchings, and verifies that they are all stable. Lastly, it can output the resultant matchings, if required.  The only dependency is PySpark. </p>
+<p>Usage of our programs is extremely simple -- everything goes through a straightforward Python CLI.  To use this application, simply run the desired program (for example ParallelSpark-Fast.py) with the doctor preferences and hospital preferences files as command line arguments [todo: true?]. So, if this were to be used for the true National Residency Match, essentially the user would just have to move all of the data into the appropriate files, and then call the Python-based Spark program. Then, the program generates the matchings, and verifies that they are all stable. Lastly, it can output the resultant matchings, as would likely be required.  The only dependency is PySpark. </p>
 
 <!-- <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
@@ -113,6 +121,8 @@ the overhead of Spark and the extra overhead of our algorithm is overcome by the
 <img src="parallel_vs_serial.png"/>
 
 <p>These results surprised us quite a bit, as we expected the overhead of using Spark to mean that only on enormous problem sizes would our approach actually reap significant benefits.  We believe that the sheer scalability of our algorithm was behind this.  </p>
+
+<p>Our results in the generalized matching situation were far less clear cut.  We found that in this situation our program would frequently get stuck in cycles, updating a similar number of doctors for many iterations in a row, or something seemingly infinitely.  As you can see in the graph below (TODO: add), this effect was rather consistent for similar problem sizes.  It is clear from the matchings output by our algorithm that it is producing reasonable results, but it is not clear why we see these cycles.  We think this may have something to do with the existence of permutations of local minima being repeatedly discovered by our knapsack algorithm.  However, is it unclear to us exactly what's going on there, and as we shall mention below this is one of the primary focuses of our ongoing reserach on the subject. </p>
 
 <h3>
 <a id="extensions" class="anchor" href="#extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extensions</h3>
