@@ -91,7 +91,12 @@ For our final project, we explored several problems in market design, a field of
 
 <img src="alg2.png"/>
 
-<p>As an example of the list truncation: if a doctor had the following preferences: [3 5 1 6 2], and the best offer was for 1, the new preferences would be [3 5 1]. The proof of the stability of matches produced by this algorithm is as follows: examine any two matchings that were output by the algorithm, say of \(p_1\) to \(s_1\) and \(p_2\) to \(s_2\), where \(p\) and \(s\) represent people and schools, respectively.  Assume for the sake of contradiction that \(p_1\) prefers \(s_2\) to \(s_1\), and \(s_2\) prefers \(p_1\).  This is impossible, because \(s_2\) makes offers to the top \(N\) students, and made an offer to \(x_2\) but not \(x_1\) -- if \(s_2\) had made an offer to \(x_1\), \(x_1\) would have remained partnered with \(s_2\), which is a contradiction.</p>
+<p>As an example of the list truncation: if a doctor had the following preferences: [3 5 1 6 2], and the best offer was for 1, the new preferences would be [3 5 1].</p>
+
+<h4>
+<a id="proof-of-correctness" class="anchor" href="#proof-of-correctness" aria-hidden="true"><span class="octicon octicon-link"></span></a>Proof of Correctness</h4>
+<p>
+The proof of the stability of matches produced by this algorithm is as follows: examine any two matchings that were output by the algorithm, say of \(p_1\) to \(s_1\) and \(p_2\) to \(s_2\), where \(p\) and \(s\) represent people and schools, respectively.  Assume for the sake of contradiction that \(p_1\) prefers \(s_2\) to \(s_1\), and \(s_2\) prefers \(p_1\).  This is impossible, because \(s_2\) makes offers to the top \(N\) students, and made an offer to \(x_2\) but not \(x_1\) -- if \(s_2\) had made an offer to \(x_1\), \(x_1\) would have remained partnered with \(s_2\), which is a contradiction.</p>
 
 <p>Critically, in this case we found that for N doctors, it took around log N iterations to reach stable matchings, and thus we could beat the serial implementation on even modestly sized datasets.</p>
 
