@@ -73,7 +73,7 @@ For our final project, we explored several problems in market design, a field of
 <h3>
 <a id="program-design" class="anchor" href="#program-design" aria-hidden="true"><span class="octicon octicon-link"></span></a>Program Design</h3>
 
-<p>There were many phases of our project. The first phase was to design an implementation for the Gale-Shapley algorithm that was as fast as possible, and to design a fast method to verify stability. While the algorithm is easy to find, including on Wikipedia, we wanted to do our best to make it as fast as possible, so that we were making a fair comparison between the parallel and serial implementations. </p>
+<p>There were many phases of our project. The first phase was to design a serial implementation for the Gale-Shapley algorithm that was as fast as possible, and to design a fast method to verify stability. While the algorithm is easy to find, including on Wikipedia, we wanted to do our best to make it as fast as possible, so that we were making a fair comparison between the parallel and serial implementations. </p>
 
 <p>To accomplish this, we first had to design a technique to generate preferences for each doctor over hospitals, and for each hospital over the doctors that apply. Thus, we wrote a program that generates these preferences, given some set of size parameters, that we used to change the problem size and compare the implementation speeds. Essentially, given some parameters, this script would generate doctor_preferences.txt and hospital_preferences.txt, which are respectively, the preferences of each doctor and each hospital over each other.</p>
 
