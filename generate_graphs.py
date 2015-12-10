@@ -35,5 +35,23 @@ plt.xlabel("Number of iterations")
 plt.ylabel("Number of doctors whose match changed")
 plt.legend()
 plt.xlim([0, 150])
+#plt.show()
+
+
+knapsack_rows = []
+with open("knapsack_runs.txt") as f:
+    reader = csv.reader(f, delimiter=",")
+    for row in reader:
+        knapsack_rows.append(map(int, row))
+print knapsack_rows
+
+
+plt.figure()
+plt.title("Comparison of Knapsack Runs")
+for i, row in enumerate(knapsack_rows):
+    plt.plot(range(len(row)), row, label="Run "+str(i))
+plt.legend()
+plt.xlabel("Number of iterations")
+plt.ylabel("Number of changes")
 plt.show()
 
