@@ -21,33 +21,31 @@
       <a href="https://github.com/ankitvgupta/FastGeneralizedMatching/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
-          <ul id="toc">
-<li><span>What is the problem we are trying to solve?</span> <a href="#problem">Problem</a></li>
-<li><span>Our data in detail</span> <a href="#data-overview">Data Overview</a></li>
-<li><span>Our program design and feature choice</span> <a href="#program-design">Program Design</a></li>
-<li><span>How to use our application</span> <a href="#usage">Usage</a></li>
-<li><span>How performant is our code?</span> <a href="#performance">Performance</a></li>
-<li><span>What interesting insights did we gain from this project?</span> <a href="#insights">Insights</a></li>
-<li><span>What extensions and improvments might we work on?</span> <a href="#extensions">Extensions</a></li>
-<li><span>What was most enjoyable, challenging, and frustrating? </span> <a href="#takeaways">Takeaways</a></li>
-</ul>
+    <ul id="toc">
+      <li><span>What is the problem we are trying to solve?</span> <a href="#problem">Problem</a></li>
+      <li><span>Our data in detail</span> <a href="#data-overview">Data Overview</a></li>
+      <li><span>Our program design and feature choice</span> <a href="#program-design">Program Design</a></li>
+      <li><span>How to use our application</span> <a href="#usage">Usage</a></li>
+      <li><span>How performant is our code?</span> <a href="#performance">Performance</a></li>
+      <li><span>What interesting insights did we gain from this project?</span> <a href="#insights">Insights</a></li>
+      <li><span>What extensions and improvments might we work on?</span> <a href="#extensions">Extensions</a></li>
+      <li><span>What was most enjoyable, challenging, and frustrating? </span> <a href="#takeaways">Takeaways</a></li>
+    </ul>
 
     <section class="main-content">
 
-
-
-      <h3>
+<h3>
 <a id="problem" class="anchor" href="#problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem</h3>
 
 <p>For our final project, we explored several problems in market design, a field of econonmics which concerns optimally matching two or more sets of agents who have preferences about the other. In particular, we are exploring the subset of market design problems known as “matching”. One of the central problems in matching is the “stable marriage” problem, in which there are N men and N women, each of which have an order of preferences over the other. The goal is to find N pairings such that there is no unpaired couple that both want each other more than their current partners. </p>
 
-<p>There is a known serial algorithm to solve this known as the Gale-Shapley Algorithm.  In this simple algorithm, the men who do not have a match yet propose to the women, and the women non-bindingly 'accept' the man who proposed to them that they prefer the most.  This continues until every man has either proposed to their list of women or is matched to a woman. Its correctness (in terms of producing stable matchings, a term we will define below) can be argued succinctly by contradiction, and its termination in at most $N^2$ iterations can be argued by noting that in the worst case every man proposes to every woman, a total of $N^2$ events.  Despite its simplicity, this algorithm has found hundreds of areas of application in theoretical and applied economics: including various public school system matchings, matchings of kidney donors with those in need, and many, many more. For these achievements, this algorithm garnered Gale and Shapley the nobel prize.</p>
+<p>There is a known serial algorithm to solve this known as the Gale-Shapley Algorithm.  In this simple algorithm, the men who do not have a match yet propose to the women, and the women non-bindingly 'accept' the man who proposed to them that they prefer the most.  This continues until every man has either proposed to their list of women or is matched to a woman. Its correctness (in terms of producing stable matchings, a term we will define below) can be argued succinctly by contradiction, and its termination in at most $N^2$ iterations can be argued by noting that in the worst case every man proposes to every woman, a total of $N^2$ events.  Despite its simplicity, this algorithm has found hundreds of areas of application in theoretical and applied economics: including various public school system matchings, matchings of kidney donors with those in need, and many, many more. For these achievements, this algorithm garnered Gale and Shapley the Nobel prize.</p>
 
 <p>An extension to this problem is used in the National Residency Match, a real process by which doctors finishing medical school get placed into American residency programs. In this set, each doctor has an ordering of preferences over some subset of the hospitals. Each hospital has an ordering over the doctors that apply there, and some number of spots. The goal is to again find a matching such that no unpaired (doctor, hospital) both want each other more than their current match. It is thought in the literature that this problem is solved using an adaptation of the serial Gale-Shapley algorithm. </p>
 
-<p>Furthermore, there is a field of market design called matching with contracts, where one problem setup is that rather than having preferences over each other, each doctor has a price they are willing to be paid to work at each hospital, and each hospital has a utility for each doctor, and we are trying to find the best assignment of doctors to hospitals such that each hospital maximizes its utility while keeping within its budget.  </p>
+<p>Furthermore, we decided to explore the relatively new field of market design known as generalized matching.  The overarching idea is that while we're negotiating who is matched with whom, we might as well also negotiate contracts between the two.  An analogy to the stable marriage problem might be a situation where men might not want to marry some women as much as others, but are willing to be paid some large amount of money to be paired with a woman they might less prefer. Generalized matching in the context of the National Residency Match, then, would mean that rather than having preferences over each other, each doctor has a price they are willing to be paid to work at each hospital, and each hospital has a utility for each doctor, and we are trying to find the best assignment of doctors to hospitals such that each hospital maximizes its utility while keeping within its budget.  Unfortunately, such problems, in which each agent has preferences not only over potential partners but also over contracts with those partners, quickly blow up in complexity.  </p>
 
-<p>We believe that the scale of these problems means that developing a scalable parallel algorithm will be useful. In particular, our project is focused on developing parallel Spark-based algorithms for solving the National Residency Match and related matching problems, such as the general problem of college admissions, and, as a reach goal, to work towards solutions for the matching with contracts problem, which has exponential complexity and no known sub-exponential solutions. </p>
+<p>We believe that the scale of these problems means that developing a scalable parallel algorithm will be useful. In particular, our project is focused on developing parallel Spark-based algorithms for solving the National Residency Match and related matching problems, such as the general problem of college admissions, and, as a reach goal, to work towards solutions for the matching with contracts problem, which has exponential complexity and no known sub-exponential solutions.  In addition, these problems are genuinely important -- from the Boston public school system selection process to the process of choosing Harvard Business School courses to the National Kidney match (see <a href="http://www.nber.org/chapters/c8185.pdf">What have we learned from Market Design</a>, written by Nobel Prize winner Alvin Roth about the successes of market design as a field.)</p>
 
 <h3>
 <a id="data-overview" class="anchor" href="#data-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Overview</h3>
@@ -82,13 +80,13 @@
 
 <p>This is exactly what we did. Our new algorithm is as follows, and is inspired by how we imagine this matching occurs in a college admissions process (albeit much faster!). Each doctor applies to all of her preferences at once. Then, each hospital picks the top N doctors among those that applied there, and send "acceptance letters" to the doctors. Then, each doctor picks his top-ranked hospital among the places he got accepted, and informs the hospitals of this decision. At this point, you can imagine that each doctor has gotten "tentatively accepted" to some hospital, or denied from all of this choices, and therefore "waitlisted". However, since some doctors may have rejected offers, a space may have opened up. So, we truncate the list of preferences for each hospital to only include the hospitals up until the one they were accepted to. So, if a doctor has the preferences Hosp1 &gt; Hosp2 &gt; Hosp3 &gt; Hosp4, and get's into Hosp3, their new preferences would be Hosp1 &gt; Hosp2 &gt; Hosp3. Then, we repeat the process until there are no changes in the matchings. The intuition behind this is that each doctor will repeatedly try to get into a better hospital than the one they are currently in.</p>
 
-<img src="alg1.png"/>
+<img src="alg2.png"/>
 
 <p>As an example of the list truncation: if a doctor had the following preferences: [3 5 1 6 2], and the best offer was for 1, the new preferences would be [3 5 1]. The proof of the stability of matches produced by this algorithm is as follows: examine any two matchings that were output by the algorithm, say of $p_1$ to $s_1$ and $p_2$ to $s_2$, where $p$ and $s$ represent people and schools, respectively.  Assume for the sake of contradiction that $p_1$ prefers $s_2$ to $s_1$, and $s_2$ prefers $p_1$.  This is impossible, because $s_2$ makes offers to the top $N$ students, and made an offer to $x_2$ but not $x_1$ -- if $s_2$ had made an offer to $x_1$, $x_1$ would have remained partnered with $s_2$, which is a contradiction.</p>
 
-<p>Critically, in this case we found that for N doctors, it took around logN iterations to reach stable matchings, and thus we could beat the serial implementation on small and large datasets.</p>
+<p>Critically, in this case we found that for N doctors, it took around log N iterations to reach stable matchings, and thus we could beat the serial implementation on even modestly sized datasets.</p>
 
-<p>Describe your program design and why you chose the features you did.</p>
+<p>In the final phase of our project, we implemented generalized matching, the general class of market design problems we describe <a href="#problem">above</a>.  The idea behind this algorithm is very similar to that behind algorithm 2.  However, instead of sorting a list of received proposals, we perform knapsack-style dynamic programming to maximize the utility of the hospital based on their budget and their utility function over doctors.  Our dynamic programming was defined recursively as: $$ M(i,j) = \max(M(i - 1, j), M(i - 1, j - s_i) + v_i) $$  Where $M(i,j)$ is the optimal value achievable when filling a knapsack of capacity $j$ with some subset of the items $1\ldots i$, each of which take up space (in our case cost some number of dollars) $s_i$, and have value $v_i$.  Note that we are taking the max for every item of taking that item or not taking it.  Hence the optimal solution is given by $\max_j(M(n, j))$ where $n$ is the number of items, or in our case the number of doctors with pending proposals to a given hospital.  To eliminate function call overhead as well as stack allocation overhead, we implemented our knapsack dynamic programming in a completely cached top-down manner with backtracking to recover the optimal solution.  Unfortunately, it is much more difficult to prove theoretical guarantees about knapsack dynamic programming, as opposed to the simple sorting which we used in algorithm 2.  For this reason, we were unable to conclusively conclude much about the optimality of solutions produced by our algorithm.  Morevoer, it isn't even clear what an optimal solution is in this situation: there is no precise equivalent to the stability condition here.  This is in part because we assume that preferences are exchangeable.  That is, we assume that every agent has their price -- a doctor may really, really prefer not to work at hospital $x$, but if you pay them 100 million dollars, they'll take the job.  A condition which does make sense to check here is pareto optimality.  This game-theoretic condition essentially means that any change from the current state will make someone worse off, that is, there is no state of the world which is strictly better in every way.  Unfortunately, in generalized matching this condition is exponentially difficult to check.  However, despite these issues, as we will see below, we did see promising empirical results. </p>
 
 <h3>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
@@ -110,7 +108,7 @@
 <img src="alg1_vs_alg2.png"/>
 
 <p>The comparison between the parallel algorithm and the serial algorithm is striking.  Really there is hardly a comparison to be made between the two -- at any nontrivial problem size
-the overhead of Spark and the extra overhead of our algorithm is overcome by the enormous scalability of our algorithm.  Note that all of our data was obtained by running our code on AWS, on a [ANKIT INSERT HERE] cluster. </p>
+the overhead of Spark and the extra overhead of our algorithm is overcome by the enormous scalability of our algorithm.  Note that all of our data was obtained by running our code on AWS, on a four-node m3.large cluster. </p>
 
 <img src="parallel_vs_serial.png"/>
 
@@ -123,14 +121,13 @@ What extensions and improvements can you suggest?</p>
 <h3>
 <a id="takeaways" class="anchor" href="#takeaways" aria-hidden="true"><span class="octicon octicon-link"></span></a>Takeaways</h3>
 
+<p>We both found working on this project to be extremely enjoyable.  As blockmates who live just down the hall from each other, we were able to spenda good amount of free time pair coding and just tossing around ideas about our project.  Getting our algorithms to finally scale the way we wanted them to after a such a huge amount of effort was also extremely satisfying.  We found the Spark UI to be extremely friendly and instrumental in our debugging process regarding Spark-specific caching, materialization, and laziness issues. </p>
+
 <p>We definitely found, as we began to see in some of the earlier problem sets, that working in a cluster-computing environment requires deeply understanding the parts of the problem where the serial implementation is leading to the most computation complexity that can be parallelized, and focusing on rethinking that approach. Moreover, we found that even when some parts of serial algorithms can be clearly parallelized, this technique does not necessarily lead to great parallel algorithms, and instead fundamental aspects of the algorithmic design need to be rethought and challenged. Thinking about how to rethink algorithms from the ground up - many of which have been highly studied for decades - so that they can be very efficiency implemented in a parallel environment was definitely the most challenging part.</p>
 
-<p>The most frustrating part was thinking through the nuances of Spark to make sure that any potential slowdown in operation was due to fundamental complexity, and not due to suboptimal caching or premature materialization. </p>
+<p>The most frustrating part was thinking through the nuances of Spark to make sure that any potential slowdown in operation was due to fundamental complexity, and not due to suboptimal caching or premature materialization.  Spark provides ample opportunity to mess things like this up -- we had to be extremely careful about correctly co-partitioning our data and doing thorough experimentation surrounding the number of partitions to use, as well as other hyper-parameters to our program. </p>
 
-<p>Next time, rather than first thinking about serial implementations and trying to adapt them in a parallel way, we would effectively try to start from the ground up on these approaches. That would allow us to think about the problem space with a Parallel-first mindset, and likely get us to the true solution even faster.</p>
-
-<p>What did you most enjoy about working on this project? What was the most challenging aspect? What was the most frustrating? What would you do differently next time?</p>
-
+<p>Next time, rather than first thinking about serial implementations and trying to adapt them in a parallel way, we might try to start from the ground up on these approaches. That would allow us to think about the problem space with a Parallel-first mindset, and likely get us to the true solution even faster: for a while, we felt stuck in the paradigm of thinking implied by Gale Shapley.</p>
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/ankitvgupta/FastGeneralizedMatching">FastGeneralizedMatching</a> is maintained by <a href="https://github.com/ankitvgupta">ankitvgupta</a> and <a href="https://github.com/jonahkall">jonahkall</a> .</span>
 
