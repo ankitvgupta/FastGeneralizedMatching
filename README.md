@@ -1,6 +1,6 @@
 # FastGeneralizedMatching
 A repository for an implementation of Matching with Contracts. Initial work will be applied to CS 205 Final Project at Harvard University.
-
+Contributors: Ankit Gupta (@ankitvgupta) and Jonah Kallenbach (@jonahkall)
 This repository contains the following important files.
 
 ## Algorithms
