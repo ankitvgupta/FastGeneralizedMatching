@@ -90,6 +90,7 @@ get_worst_person_selected_index(hospital_prefs[2], matches[2])
 
 
 def check_results(doc_prefs, hospital_prefs, hospital_matchings):
+    "Checking"
     doc_to_hospital_matching = {}
     # Determine what the matchings were
     for doc in range(len(doc_prefs)):

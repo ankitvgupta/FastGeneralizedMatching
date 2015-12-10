@@ -11,7 +11,12 @@ plt.plot(comp[:, 0], comp[:, 4], label="Serial", c='blue')
 plt.xlabel("Number of doctors (size of problem)")
 plt.ylabel("Time (sec)")
 plt.legend()
-#plt.show()
+
+# To zoom in, uncomment these two lines
+#############################
+plt.xlim([-5, 50000])
+plt.ylim([-5, 2500])
+#######################
 
 import csv
 
