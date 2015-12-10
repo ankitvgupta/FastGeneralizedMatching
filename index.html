@@ -8,17 +8,33 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" href="main.css" type="text/css" media="screen" />
   </head>
   <body>
+
     <section class="page-header">
       <h1 class="project-name">FastGeneralizedMatching</h1>
-      <h2 class="project-tagline">A repository for an implementation of Matching with Contracts. Initial work will be applied to CS 205 Final Project at Harvard University.</h2>
+      <h2 class="project-tagline">New algorithms and implementations of parallelized matching in Spark.</h2>
       <a href="https://github.com/ankitvgupta/FastGeneralizedMatching" class="btn">View on GitHub</a>
       <a href="https://github.com/ankitvgupta/FastGeneralizedMatching/zipball/master" class="btn">Download .zip</a>
       <a href="https://github.com/ankitvgupta/FastGeneralizedMatching/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
+          <ul id="toc">
+<li><span>What is the problem we are trying to solve?</span> <a href="#problem">Problem</a></li>
+<li><span>Our data in detail</span> <a href="#data-overview">Data Overview</a></li>
+<li><span>Our program design and feature choice</span> <a href="#program-design">Program Design</a></li>
+<li><span>How to use our application</span> <a href="#usage">Usage</a></li>
+<li><span>How performant is our code?</span> <a href="#performance">Performance</a></li>
+<li><span>What interesting insights did we gain from this project?</span> <a href="#insights">Insights</a></li>
+<li><span>What extensions and improvments might we work on?</span> <a href="#extensions">Extensions</a></li>
+<li><span>What was most enjoyable, challenging, and frustrating? </span> <a href="#takeaways">Takeaways</a></li>
+</ul>
+
     <section class="main-content">
+
+
+
       <h3>
 <a id="problem" class="anchor" href="#problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem</h3>
 
@@ -30,7 +46,7 @@
 
 <p>Furthermore, there is a field of market design called matching with contracts, where one problem setup is that rather than having preferences over each other, each doctor has a price they are willing to be paid to work at each hospital, and each hospital has a utility for each doctor, and we are trying to find the best assignment of doctors to hospitals such that each hospital maximizes its utility while keeping within its budget.  </p>
 
-<p>We believe that the scale of these problems means that developing a scalable parallel algorithm will be useful. In particular, our project is focused on developing parallel Spark-based algorithms for solving the National Residency Match and related matching problems, such as the general problem of college admissions, and, as a reach goal, to work towards solutions for the matching with contracts problem, which has exponential complexity and no known non-trivial serial algorithmic solutions.</p>
+<p>We believe that the scale of these problems means that developing a scalable parallel algorithm will be useful. In particular, our project is focused on developing parallel Spark-based algorithms for solving the National Residency Match and related matching problems, such as the general problem of college admissions, and, as a reach goal, to work towards solutions for the matching with contracts problem, which has exponential complexity and no known sub-exponential solutions. </p>
 
 <h3>
 <a id="data-overview" class="anchor" href="#data-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Overview</h3>
@@ -68,8 +84,7 @@
 <h3>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
 
-<p>To use this application, the main program takes in a list of preferences for each doctor and hospital. So, if this were to be used for the true National Residency Match, essentially the user would just have to move all of the data into the appropriate files, and then call the Python-based Spark program. Then, the program generates the matchings, and verifies that they are all stable. Lastly, it can output the resultant matchings, if required. 
-How do you use your application (mouse and keyboard functions, input/output, etc)?</p>
+<p>To use this application, run the main program takes in a list of preferences for each doctor and hospital. So, if this were to be used for the true National Residency Match, essentially the user would just have to move all of the data into the appropriate files, and then call the Python-based Spark program. Then, the program generates the matchings, and verifies that they are all stable. Lastly, it can output the resultant matchings, if required.  The only dependency is PySpark. </p>
 
 <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
@@ -83,7 +98,12 @@ How do you use your application (mouse and keyboard functions, input/output, etc
 
 <p>Furthermore, our intuitions about where the complexity of this problem was evolved over time. Earlier, our main expectation of what made this problem hard was the fact that there are thousands of doctors trying to be matched to thousands of hospitals, and thus being able to parallelize this process would quickly lead to a significant speedup. While this was true to some extent, we actually found that there was a huge deal of complexity caused by the potentially high number of hospitals that each doctor to apply to. When we increased the number of hospitals each doctor could apply to, we saw polynomial slowdown in the amount of time that the serial implementation took. Furthermore, when we wrote our second Spark-based algorithm which allowed each doctor to submit all of their choices at once, we got significant speedups, which makes sense since it mitigated for a single doctor making many applications.</p>
 
-<p>What interesting insights did you gain from this project?</p>
+<img src="alg1_vs_alg2.png"/>
+
+<p>The comparison between the parallel algorithm and the serial algorithm is striking.  Really there is hardly a comparison to be made between the two -- at any nontrivial problem size
+the overhead of Spark and the extra overhead of our algorithm is overcome by the enormous scalability of our algorithm.  Note that all of our data was obtained by running our code on AWS, on a [ANKIT INSERT HERE] cluster. </p>
+
+<img src="parallel_vs_serial.png"/>
 
 <h3>
 <a id="extensions" class="anchor" href="#extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extensions</h3>
