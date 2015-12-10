@@ -1,7 +1,17 @@
+##############################
+# This solves a version of matching with contracts using Spark, and a dynamic-programming based knapsack solver
+# that we wrote.
+#
+# Authors: Ankit Gupta, Jonah Kallenbach
+################################
+
+# Comment out these two lines when running on AWS
 import findspark
 findspark.init()
 
+
 import pyspark
+# Remove appname="Spark1" when running on AWS
 sc = pyspark.SparkContext(appName="Spark1")
 sc.setCheckpointDir("checkpoints")
 

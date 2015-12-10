@@ -5,10 +5,13 @@
 # Implements a Parallelized version of the Gale-Shapley algorithm, parallelizing over doctors
 ################
 
+# Comment out these two lines when running on AWS
 import findspark
 findspark.init()
 
 import pyspark
+
+# Remove then appName="Spark1" when running on AWS
 sc = pyspark.SparkContext(appName="Spark1")
 sc.setCheckpointDir("checkpoints")
 

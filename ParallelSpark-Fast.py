@@ -6,12 +6,15 @@
 # 
 ################
 
+
+# If running on AWS comment out these lines
 import findspark
 findspark.init()
 
 import pyspark
+
+# Remove the appName="Spark1" when running on AWS
 sc = pyspark.SparkContext(appName="Spark1")
-sc.setCheckpointDir("checkpoints")
 
 import numpy as np
 import itertools
@@ -120,7 +123,6 @@ def update_hospital_matches(new_matches, old_matches):
 
 
 iteration = 0
-steps_per_checkpoint = 5
 while True:
     iteration += 1
     # These are the top remaining choices for the unmatched doctors
