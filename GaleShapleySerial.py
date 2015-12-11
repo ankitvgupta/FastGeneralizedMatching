@@ -15,13 +15,13 @@ if len(sys.argv) != 3:
     print "Proper usage: python [program] [doc_prefs] [hosp_prefs]"
     sys.exit(1)
 
-doc_prefs = sys.argv[1]
-hosp_prefs = sys.argv[2]
+doc_prefs_file = sys.argv[1]
+hosp_prefs_file = sys.argv[2]
 
-doctor_prefs = np.loadtxt("doctor_preferences.txt").astype(int).tolist()
+doctor_prefs = np.loadtxt(doc_prefs_file).astype(int).tolist()
 
 hospital_prefs = []
-with open('hospital_preferences.txt') as inputfile:
+with open(hosp_prefs_file) as inputfile:
     for row in csv.reader(inputfile, delimiter=" "):
         hospital_prefs.append(map(int, row))
 
