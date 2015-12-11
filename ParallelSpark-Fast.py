@@ -6,7 +6,6 @@
 # 
 ################
 
-
 # If running on AWS comment out these lines
 import findspark
 findspark.init()
@@ -20,6 +19,14 @@ import numpy as np
 import itertools
 import sys
 
+# CLI stuff
+if sys.argc != 3:
+    print "Proper usage: python [program] [doc_prefs] [hosp_prefs]"
+    sys.exit(1)
+
+doc_prefs = sys.argv[1]
+hosp_prefs = sys.argv[2]
+
 # Reduce the amount that Spark logs to the console.
 logger = sc._jvm.org.apache.log4j
 logger.LogManager.getLogger("org"). setLevel( logger.Level.ERROR )
@@ -31,11 +38,6 @@ def copartitioned(RDD1, RDD2):
 
 spots_per_hospital = 6
 numPartitions = 8
-
-doc_prefs = sys.argv[1]
-hosp_prefs = sys.argv[2]
-
-print doc_prefs, hosp_prefs
 
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
@@ -56,10 +58,6 @@ def pick_top_N(preferences, pickingfrom, N):
     pickingfrom.sort(key=lambda x: preferences.index(x))
     return pickingfrom[:N]
 
-    
-
-
-# In[8]:
 
 def pick_best_program(pickingfrom, preferences):
     

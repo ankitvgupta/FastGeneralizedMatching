@@ -10,6 +10,15 @@ import findspark
 findspark.init()
 
 import pyspark
+import sys
+
+# CLI stuff
+if sys.argc != 3:
+    print "Proper usage: python [program] [doc_prefs] [hosp_prefs]"
+    sys.exit(1)
+
+doc_prefs = sys.argv[1]
+hosp_prefs = sys.argv[2]
 
 # Remove then appName="Spark1" when running on AWS
 sc = pyspark.SparkContext(appName="Spark1")
@@ -33,8 +42,8 @@ numPartitions = 2
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
 # By this, I mean that hospitals have a set of preferences over doctors, and doctors have preferences over hospitals
-doctor_RDD = sc.textFile('doctor_preferences.txt', numPartitions).map(lambda x: map(int, x.split())).zipWithIndex()                                                        .map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
-hospital_RDD = sc.textFile('hospital_preferences.txt', numPartitions).map(lambda x: map(int, x.split())).zipWithIndex()                                                        .map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
+doctor_RDD = sc.textFile(doc_prefs, numPartitions).map(lambda x: map(int, x.split())).zipWithIndex()                                                        .map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
+hospital_RDD = sc.textFile(hosp_prefs, numPartitions).map(lambda x: map(int, x.split())).zipWithIndex()                                                        .map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
 
 assert(copartitioned(doctor_RDD, hospital_RDD))
 

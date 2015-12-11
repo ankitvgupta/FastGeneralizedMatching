@@ -10,6 +10,14 @@ import numpy as np
 import itertools
 import sys
 
+# CLI stuff
+if sys.argc != 3:
+    print "Proper usage: python [program] [doc_prefs] [hosp_prefs]"
+    sys.exit(1)
+
+doc_prefs = sys.argv[1]
+hosp_prefs = sys.argv[2]
+
 doctor_prefs = np.loadtxt("doctor_preferences.txt").astype(int).tolist()
 
 hospital_prefs = []
