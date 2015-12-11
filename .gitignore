@@ -1,4 +1,3 @@
-*.txt
 checkpoints
 doctor_preferences.txt
 hospital_preferences.txt
