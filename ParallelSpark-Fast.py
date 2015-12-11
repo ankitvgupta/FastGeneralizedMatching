@@ -32,11 +32,16 @@ def copartitioned(RDD1, RDD2):
 spots_per_hospital = 6
 numPartitions = 8
 
+doc_prefs = sys.argv[1]
+hosp_prefs = sys.argv[2]
+
+print doc_prefs, hosp_prefs
+
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
 # By this, I mean that hospitals have a set of preferences over doctors, and doctors have preferences over hospitals
-doctor_RDD = sc.textFile('doctor_preferences.txt', numPartitions).map(lambda x: map(int, x.split())).zipWithIndex().map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
-hospital_RDD = sc.textFile('hospital_preferences.txt', numPartitions).map(lambda x: map(int, x.split())).zipWithIndex().map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
+doctor_RDD = sc.textFile(doc_prefs, numPartitions).map(lambda x: map(int, x.split())).zipWithIndex().map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
+hospital_RDD = sc.textFile(hosp_prefs, numPartitions).map(lambda x: map(int, x.split())).zipWithIndex().map(lambda (x, y): (y, x)).partitionBy(numPartitions).cache()
 
 
 assert(copartitioned(doctor_RDD, hospital_RDD))
