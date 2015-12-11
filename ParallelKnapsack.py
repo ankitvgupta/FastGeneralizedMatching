@@ -85,7 +85,8 @@ ivm_test_1 = {0:2, 1:3, 2:4, 3:2, 4:5}
 # [doc, price] CURRENTLY MUST BE ORDERED IN THIS WAY
 icl_test_1 = [[0,1],[1,2],[2,3],[3,6],[4,1]]
 
-print fast_knapsack_solver(ivm_test_1, icl_test_1, 3)
+# Use for testing
+#print fast_knapsack_solver(ivm_test_1, icl_test_1, 3)
 
 def copartitioned(RDD1, RDD2):
     "check if two RDDs are copartitioned"
@@ -93,6 +94,9 @@ def copartitioned(RDD1, RDD2):
 
 spots_per_hospital = 6
 numPartitions = 4
+
+doc_prefs = sys.argv[1]
+hosp_prefs = sys.argv[2]
 
 # These RDD are KV pairs, where the key is the ID of the doctor/hospital, and the values are the IDs of the respective 
 # doctors or hospitals in order of preference.
