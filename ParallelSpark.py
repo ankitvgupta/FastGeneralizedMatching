@@ -13,7 +13,7 @@ import pyspark
 import sys
 
 # CLI stuff
-if sys.argc != 3:
+if len(sys.argv) != 3:
     print "Proper usage: python [program] [doc_prefs] [hosp_prefs]"
     sys.exit(1)
 
