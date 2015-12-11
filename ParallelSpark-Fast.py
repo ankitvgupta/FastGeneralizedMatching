@@ -81,34 +81,7 @@ def combine_old_new(newoptions, oldoptions, preferences):
     alloptions = list(set(newoptions).union(set(oldoptions)))
     return pick_top_N(preferences, alloptions, spots_per_hospital)
 
-
-def accept_new_hospital_assignment(old, new):
-    if new == None:
-        return -1
-    return new
-
-
-# If unmatched (match == -1), then we are gonna use try to use the next pref, so one remove from the list
-def remove_pref_if_needed(prefs, match):
-    # If unmatched and pref remaining, remove it.
-    if match == -1 and len(prefs) > 0:
-        return prefs[1:]
-    # Else return original prefs
-    return prefs
-
-
-def is_changed(old, new):
-    if old == -1 and new == None:
-        return False
-    elif old == -1 and new != None:
-        return True
-    return old != new
-    
-
-
 doctor_prefs = doctor_RDD.map(lambda x: x).partitionBy(numPartitions).cache()
-
-
 doctor_matchings = doctor_RDD.mapValues(lambda x : -1).partitionBy(numPartitions).cache()
 hospital_matchings = hospital_RDD.mapValues(lambda x: []).partitionBy(numPartitions).cache()
 
