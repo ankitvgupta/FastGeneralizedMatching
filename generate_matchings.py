@@ -2,9 +2,9 @@
 import numpy as np
 import csv
 
-numDoctors = 4100
-numHospitals = 500
-numPreferencesPerDoctor = 100
+numDoctors = 410
+numHospitals = 50
+numPreferencesPerDoctor = 25
 
 doctor_prefs = []
 hospital_applications = {}

@@ -163,4 +163,5 @@ bad_results = verify_matches(doctor_matchings, hospital_matchings, doctor_RDD, h
 # If the assertion passes, then this is a stable matching!
 assert(bad_results.count() == 0)
 
-
+# Uncomment this line to print the matchings
+#print doctor_matchings.collect()

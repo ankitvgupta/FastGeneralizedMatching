@@ -20,8 +20,7 @@ Pyspark (we use Spark 1.5.0 and findspark), numpy, scipy
 
 ## Instructions to Run
 - Set parameters in [generate_matchings.py](generate_matchings.py) to the desired parameters. 
-    - Recommended parameters are numDoctors = 41000, numHospitals = 5000, numPreferencesPerDoctor = 100
-    - These parameters match the National Residency Match
+    - Recommended parameters are numDoctors = 4100, numHospitals = 500, numPreferencesPerDoctor = 100
 - run `python generate_matchings.py`
     - This will output save two files with lists of preferences
     - This may take a few minutes to run.

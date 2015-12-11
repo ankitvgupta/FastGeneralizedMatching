@@ -194,4 +194,5 @@ assert(bad_results.count() == 0)
 # Make sure the number of matched doctors agrees in both RDDs
 assert(doctor_matchings.filter(lambda (x,y): y != -1).count() == hospital_matchings.mapValues(len).values().sum())
 
-
+# Uncomment this line to actually print the matchings
+#print doctor_matchings.collect()

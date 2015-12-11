@@ -28,11 +28,8 @@ with open('hospital_preferences.txt') as inputfile:
 numPartitions = 64
 numPositionsPerHospital = 6
 
-print doctor_prefs[0]
-print hospital_prefs[0]
 x = [1,4,2,1]
 y = sorted(x, reverse=True)
-print y
 
 # Simply perform the well-known Gale Shapley algorithm for the
 # national residency match.  This is probably along the lines of
@@ -87,6 +84,7 @@ def serial_implementation():
 
 
 matches = serial_implementation()
+print "These are the people in each hospital (the arrays are ordered by hospital)"
 print matches
 
 # Get the index in the hospital prefs for the worst person that hospital selected
