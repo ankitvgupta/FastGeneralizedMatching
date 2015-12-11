@@ -13,7 +13,7 @@ This repository contains the following important files, that should be evaluated
 
 ## Generators
 - [generate_matchings.py](generate_matchings.py): contains code to generate preferences for give numbers of doctors, hospitals, and other preferences.
-- [generate_graphs.py](generate_graphs.py) takes the data from the various experiments and plots the results
+- [generate_graphs.py](data/generate_graphs.py) takes the data from the various experiments and plots the results
 
 ## Dependencies
 Pyspark (we use Spark 1.5.0 and findspark), numpy, scipy
