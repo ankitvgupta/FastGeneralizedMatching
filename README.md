@@ -25,8 +25,8 @@ Pyspark (we use Spark 1.5.0 and findspark), numpy, scipy
 - run `python generate_matchings.py`
     - This will output save two files with lists of preferences
     - This may take a few minutes to run.
-- You should now see a `doctor_matchings.txt` and `hospital_matchings.txt` file created in the directory
-- Run `time python ParallelSpark-Fast.py`, or any of the other above algorithms
+- You should now see a `doctor_preferences.txt` and `hospital_preferences.txt` file created in the directory
+- Run `time python ParallelSpark-Fast.py doctor_preferences.txt hospital_preferences.txt`, or any of the other above algorithms
     - Alternatively, you can run this script on AWS using spark-submit
     - Change the labeled lines in each Spark file when running on AWS
 - The code should execute and print the time it took to generate all of the matchings and verify their stability.
